@@ -25,17 +25,21 @@ project "ImGui"
 
 	includedirs
 	{
-		"%{IncludeDir.imgui}",
-		"%{IncludeDir.SFML}"
+		"%{IncludeDir.imgui}"
 	}
 
 	filter "system:linux"
 		pic "on"
-
+	filter ""
+	
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
+	filter ""
 
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
+	filter ""
+	
+	includeAndLinkSFML()
