@@ -2,7 +2,6 @@ project "ImGui"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++14"
-	staticruntime "on"
 	
 	targetdir ("%{wks.location}/Binaries/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -20,16 +19,14 @@ project "ImGui"
 		"imstb_textedit.h",
 		"imstb_truetype.h",
 		"imgui_demo.cpp",
-		"backends/imgui_impl_glfw.cpp",
-		"backends/imgui_impl_glfw.h",
-		"backends/imgui_impl_opengl3.cpp",
-		"backends/imgui_impl_opengl3.h"
+		"imgui-SFML.h",
+		"imgui-SFML.cpp"
 	}
 
 	includedirs
 	{
-		"%{IncludeDir.glfw}",
-		"%{IncludeDir.imgui}"
+		"%{IncludeDir.imgui}",
+		"%{IncludeDir.SFML}"
 	}
 
 	filter "system:linux"
