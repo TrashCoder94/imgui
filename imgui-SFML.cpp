@@ -33,7 +33,7 @@
 #define IMGUI_SFML_KEY_GRAVE sf::Keyboard::Tilde
 #endif
 
-#ifdef (__APPLE__) || (__MACH__)
+#if defined(__APPLE__) || defined(__MACH__)
 #define IMGUI_SFML_MAC 1
 #else
 #define IMGUI_SFML_MAC 0
