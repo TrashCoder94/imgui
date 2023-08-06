@@ -33,6 +33,12 @@
 #define IMGUI_SFML_KEY_GRAVE sf::Keyboard::Tilde
 #endif
 
+#ifdef (__APPLE__) || (__MACH__)
+#define IMGUI_SFML_MAC 1
+#else
+#define IMGUI_SFML_MAC 0
+#endif
+
 #ifdef ANDROID
 #ifdef USE_JNI
 
@@ -1117,6 +1123,7 @@ GLuint convertImTextureIDToGLTextureHandle(ImTextureID textureID) {
 
 // copied from imgui/backends/imgui_impl_opengl2.cpp
 void SetupRenderState(ImDrawData* draw_data, int fb_width, int fb_height) {
+#if !IMGUI_SFML_MAC
     // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor
     // enabled, vertex/texcoord/color pointers, polygon fill.
     glEnable(GL_BLEND);
@@ -1158,6 +1165,7 @@ void SetupRenderState(ImDrawData* draw_data, int fb_width, int fb_height) {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+#endif
 }
 
 // Rendering callback
@@ -1177,6 +1185,7 @@ void RenderDrawLists(ImDrawData* draw_data) {
     if (fb_width == 0 || fb_height == 0) return;
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
+#if !IMGUI_SFML_MAC
     // Backup GL state
     // Backup GL state
     GLint last_texture;
@@ -1200,6 +1209,7 @@ void RenderDrawLists(ImDrawData* draw_data) {
 #else
     glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TRANSFORM_BIT);
 #endif
+#endif
 
     // Setup desired GL state
     SetupRenderState(draw_data, fb_width, fb_height);
@@ -1214,13 +1224,14 @@ void RenderDrawLists(ImDrawData* draw_data) {
         const ImDrawList* cmd_list = draw_data->CmdLists[n];
         const ImDrawVert* vtx_buffer = cmd_list->VtxBuffer.Data;
         const ImDrawIdx* idx_buffer = cmd_list->IdxBuffer.Data;
+#if !IMGUI_SFML_MAC
         glVertexPointer(2, GL_FLOAT, sizeof(ImDrawVert),
                         (const GLvoid*)((const char*)vtx_buffer + IM_OFFSETOF(ImDrawVert, pos)));
         glTexCoordPointer(2, GL_FLOAT, sizeof(ImDrawVert),
                           (const GLvoid*)((const char*)vtx_buffer + IM_OFFSETOF(ImDrawVert, uv)));
         glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(ImDrawVert),
                        (const GLvoid*)((const char*)vtx_buffer + IM_OFFSETOF(ImDrawVert, col)));
-
+#endif
         for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
             const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
             if (pcmd->UserCallback) {
@@ -1241,6 +1252,7 @@ void RenderDrawLists(ImDrawData* draw_data) {
 
                 if (clip_rect.x < fb_width && clip_rect.y < fb_height && clip_rect.z >= 0.0f &&
                     clip_rect.w >= 0.0f) {
+#if !IMGUI_SFML_MAC
                     // Apply scissor/clipping rectangle
                     glScissor((int)clip_rect.x, (int)(fb_height - clip_rect.w),
                               (int)(clip_rect.z - clip_rect.x), (int)(clip_rect.w - clip_rect.y));
@@ -1251,11 +1263,13 @@ void RenderDrawLists(ImDrawData* draw_data) {
                     glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,
                                    sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT,
                                    idx_buffer + pcmd->IdxOffset);
+#endif
                 }
             }
         }
     }
 
+#if !IMGUI_SFML_MAC
     // Restore modified GL state
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -1279,6 +1293,7 @@ void RenderDrawLists(ImDrawData* draw_data) {
     glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer);
     glDisable(GL_SCISSOR_TEST);
+#endif
 #endif
 }
 
