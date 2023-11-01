@@ -27,7 +27,7 @@ project "ImGui"
 
 	includedirs
 	{
-		"%{IncludeDir.imgui}"
+		"%{IncludeDir.imgui}",
 		"%{IncludeDir.imguiStdLib}"
 	}
 
