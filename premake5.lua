@@ -18,6 +18,8 @@ project "ImGui"
 		"imstb_rectpack.h",
 		"imstb_textedit.h",
 		"imstb_truetype.h",
+		"misc/cpp/imgui_stdlib.h",
+		"misc/cpp/imgui_stdlib.cpp",
 		"imgui_demo.cpp",
 		"imgui-SFML.h",
 		"imgui-SFML.cpp"
@@ -26,6 +28,7 @@ project "ImGui"
 	includedirs
 	{
 		"%{IncludeDir.imgui}"
+		"%{IncludeDir.imguiStdLib}"
 	}
 
 	filter "system:linux"
